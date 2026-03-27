@@ -4,6 +4,10 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 
 import model.Pedido;
 import model.ItemPedido;
@@ -18,18 +22,43 @@ public class PdfService {
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf);
 
-            document.add(new Paragraph("=== PEDIDO ==="));
+            document.add(
+                    new Paragraph("PEDIDO DE COMPRA")
+                            .setBold()
+                            .setFontSize(18)
+                            .setTextAlignment(TextAlignment.CENTER)
+            );
+
+            document.add(new Paragraph("\n"));
+
             document.add(new Paragraph("Data: " + pedido.getDataPedido()));
             document.add(new Paragraph("Previsão: " + pedido.getPrevisaoEntrega()));
-            document.add(new Paragraph(" "));
+
+            document.add(new Paragraph("\n"));
+
+            Table table = new Table(UnitValue.createPercentArray(new float[]{4, 2, 2, 2}));
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            table.addHeaderCell(new Cell().add(new Paragraph("Produto").setBold()));
+            table.addHeaderCell(new Cell().add(new Paragraph("Qtd").setBold()));
+            table.addHeaderCell(new Cell().add(new Paragraph("Unidade").setBold()));
+            table.addHeaderCell(new Cell().add(new Paragraph("Condição").setBold()));
 
             for (ItemPedido item : pedido.getItens()) {
-                document.add(new Paragraph(
-                        item.getProduto().getNome() +
-                                " | Quantidade: " + item.getQuantidade() +
-                                " | Condição: " + item.getCondicao()
-                ));
+                table.addCell(item.getProduto().getNome());
+                table.addCell(String.valueOf(item.getQuantidade()));
+                table.addCell(item.getProduto().getUnidade());
+                table.addCell(item.getCondicao());
             }
+
+            document.add(table);
+
+            document.add(new Paragraph("\n"));
+
+            document.add(
+                    new Paragraph("Total de itens: " + pedido.getItens().size())
+                            .setBold()
+            );
 
             document.close();
 
