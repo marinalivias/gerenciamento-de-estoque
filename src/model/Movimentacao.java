@@ -1,6 +1,8 @@
 package model;
 
-public class Movimentacao {
+import java.io.Serializable;
+
+public class Movimentacao implements Serializable {
 
     private Produto produto;
     private double quantidade;
