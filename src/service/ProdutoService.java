@@ -10,8 +10,8 @@ public class ProdutoService {
 
     private List<Produto> produtos = new ArrayList<>();
 
-    public void criarProduto(String nome, Categoria categoria, String unidade) {
-        Produto produto = new Produto(nome, categoria, unidade);
+    public void criarProduto(String nome, Categoria categoria, String unidade, double estoqueMinimo, double estoqueIdeal) {
+        Produto produto = new Produto(nome, categoria, unidade, estoqueMinimo, estoqueIdeal);
         produtos.add(produto);
         System.out.println("Produto criado!");
     }

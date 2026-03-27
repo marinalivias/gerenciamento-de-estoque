@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pedido {
+
     private String dataPedido;
     private String previsaoEntrega;
     private List<ItemPedido> itens;
@@ -19,8 +20,8 @@ public class Pedido {
     }
 
     public void mostrarPedido() {
-        System.out.println("Data: " + dataPedido);
-        System.out.println("Previsão: " + previsaoEntrega);
+        System.out.println("Data do pedido: " + dataPedido);
+        System.out.println("Previsão de entrega: " + previsaoEntrega);
         System.out.println("Itens:");
 
         for (ItemPedido item : itens) {
