@@ -1,16 +1,22 @@
 package service;
 
 import model.Categoria;
+import util.ArquivoService;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriaService {
 
-    private List<Categoria> categorias = new ArrayList<>();
+    private List<Categoria> categorias;
+
+    public CategoriaService() {
+        categorias = ArquivoService.carregar("categorias.dat");
+    }
 
     public void criarCategoria(String nome) {
-        Categoria categoria = new Categoria(nome);
-        categorias.add(categoria);
+        categorias.add(new Categoria(nome));
+        ArquivoService.salvar("categorias.dat", categorias);
         System.out.println("Categoria criada!");
     }
 
