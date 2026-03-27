@@ -11,6 +11,15 @@ public class MovimentacaoService {
 
     private List<Movimentacao> movimentacoes;
 
+    public double calcularQuantidadeReposicao(Produto produto) {
+        double atual = calcularEstoque(produto);
+        double ideal = produto.getEstoqueIdeal();
+
+        if (atual >= ideal) return 0;
+
+        return ideal - atual;
+    }
+
     public MovimentacaoService() {
         movimentacoes = ArquivoService.carregar("movimentacoes.dat");
     }

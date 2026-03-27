@@ -31,4 +31,16 @@ public class Pedido implements Serializable {
                     + " | " + item.getCondicao());
         }
     }
+
+    public String getDataPedido() {
+        return dataPedido;
+    }
+
+    public String getPrevisaoEntrega() {
+        return previsaoEntrega;
+    }
+
+    public List<ItemPedido> getItens() {
+        return itens;
+    }
 }
