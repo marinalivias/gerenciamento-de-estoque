@@ -4,11 +4,14 @@ import java.io.Serializable;
 
 public class Produto implements Serializable {
 
-    private String nome;
-    private Categoria categoria;
-    private String unidade;
-    private double estoqueMinimo;
-    private double estoqueIdeal;
+    private final String nome;
+    private final Categoria categoria;
+    private final String unidade;
+    private final double estoqueMinimo;
+    private final double estoqueIdeal;
+    private int id;
+    private String status;
+    private double quantidadeGastaMes;
 
     public Produto(String nome, Categoria categoria, String unidade, double estoqueMinimo, double estoqueIdeal) {
         this.nome = nome;
@@ -36,5 +39,17 @@ public class Produto implements Serializable {
 
     public double getEstoqueIdeal() {
         return estoqueIdeal;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public double getQuantidadeGastaMes() {
+        return quantidadeGastaMes;
     }
 }

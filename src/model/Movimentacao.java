@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public class Movimentacao implements Serializable {
 
-    private Produto produto;
-    private double quantidade;
-    private String tipo; // "ENTRADA" ou "SAIDA"
-    private String data;
+    private final Produto produto;
+    private final double quantidade;
+    private final String tipo; // "ENTRADA" ou "SAIDA"
+    private final String data;
 
     public Movimentacao(Produto produto, double quantidade, String tipo, String data) {
         this.produto = produto;

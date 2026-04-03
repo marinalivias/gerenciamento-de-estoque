@@ -3,12 +3,11 @@ package service;
 import model.Categoria;
 import util.ArquivoService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriaService {
 
-    private List<Categoria> categorias;
+    private final List<Categoria> categorias;
 
     public CategoriaService() {
         categorias = ArquivoService.carregar("categorias.dat");

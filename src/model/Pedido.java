@@ -6,9 +6,9 @@ import java.util.List;
 
 public class Pedido implements Serializable {
 
-    private String dataPedido;
-    private String previsaoEntrega;
-    private List<ItemPedido> itens;
+    private final String dataPedido;
+    private final String previsaoEntrega;
+    private final List<ItemPedido> itens;
 
     public Pedido(String dataPedido, String previsaoEntrega) {
         this.dataPedido = dataPedido;
