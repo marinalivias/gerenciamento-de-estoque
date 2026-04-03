@@ -1,5 +1,10 @@
-import model.*;
-import service.*;
+import model.Categoria;
+import model.Pedido;
+import model.Produto;
+import service.CategoriaService;
+import service.MovimentacaoService;
+import service.PedidoService;
+import service.ProdutoService;
 import util.PdfService;
 
 import java.util.List;
@@ -240,10 +245,7 @@ public class Main {
             return;
         }
 
-        System.out.print("Data: ");
-        String data = sc.nextLine();
-
-        movimentacaoService.registrarEntrada(produto, qtd, data);
+        movimentacaoService.registrarEntrada(produto, qtd);
     }
 
     public static void registrarSaida() {
@@ -285,10 +287,40 @@ public class Main {
             return;
         }
 
-        System.out.print("Data: ");
-        String data = sc.nextLine();
+        movimentacaoService.registrarSaida(produto, qtd);
+    }
 
-        movimentacaoService.registrarSaida(produto, qtd, data);
+    public static void filtrarPorCategoria() {
+        List<Categoria> categorias = categoriaService.listarCategorias();
+
+        for (int i = 0; i < categorias.size(); i++) {
+            System.out.println(i + " - " + categorias.get(i).getNome());
+        }
+
+        System.out.print("Escolha: ");
+        int index = sc.nextInt();
+        sc.nextLine();
+
+        Categoria cat = categorias.get(index);
+
+        for (Produto p : produtoService.listarProdutos()) {
+            if (p.getCategoria().equals(cat)) {
+                System.out.println(p.getNome());
+            }
+        }
+    }
+
+    public static void filtrarPorStatus() {
+        System.out.print("Digite status (CRÍTICO / BAIXO / OK): ");
+        String statusBusca = sc.nextLine();
+
+        for (Produto p : produtoService.listarProdutos()) {
+            String status = movimentacaoService.calcularStatus(p);
+
+            if (status.equalsIgnoreCase(statusBusca)) {
+                System.out.println(p.getNome());
+            }
+        }
     }
 
     public static void mostrarEstoque() {
@@ -298,9 +330,18 @@ public class Main {
 
         for (Produto p : produtos) {
             double estoque = movimentacaoService.calcularEstoque(p);
+
+            String status = movimentacaoService.calcularStatus(p);
             String alerta = movimentacaoService.precisaRepor(p) ? " <<< REPOSIÇÃO NECESSÁRIA! >>>" : "";
 
-            System.out.println(p.getNome() + " | Atual: " + estoque + " " + p.getUnidade() + alerta);
+            System.out.println(p.getNome() +
+                    " | Estoque: " + estoque +
+                    " " + p.getUnidade() +
+                    " | Status: " + status +
+                    alerta);
+            if (movimentacaoService.precisaRepor(p)) {
+                System.out.println("⚠ ALERTA: " + p.getNome() + " precisa reposição!");
+            }
         }
     }
 
@@ -339,6 +380,7 @@ public class Main {
                     " | Estoque: " + estoque + " " + p.getUnidade());
         }
     }
+
     public static void mostrarReposicao() {
         List<Produto> produtos = produtoService.listarProdutos();
 

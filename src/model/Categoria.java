@@ -3,7 +3,7 @@ package model;
 import java.io.Serializable;
 
 public class Categoria implements Serializable {
-    private String nome;
+    private final String nome;
 
     public Categoria(String nome) {
         this.nome = nome;

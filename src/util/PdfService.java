@@ -1,16 +1,16 @@
 package util;
 
-import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
-
-import model.Pedido;
 import model.ItemPedido;
+import model.Pedido;
 
 public class PdfService {
 
@@ -21,12 +21,22 @@ public class PdfService {
             PdfWriter writer = new PdfWriter(nomeArquivo);
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf);
+            try {
+                Image logo = new Image(ImageDataFactory.create("assets/logo.png"));
+                logo.setWidth(120);
+                logo.setHorizontalAlignment(com.itextpdf.layout.properties.HorizontalAlignment.CENTER);
+
+                document.add(logo);
+            } catch (Exception e) {
+                System.out.println("Logo não encontrada, seguindo sem logo...");
+            }
+            document.add(new Paragraph("\n"));
 
             document.add(
                     new Paragraph("PEDIDO DE COMPRA")
                             .setBold()
                             .setFontSize(18)
-                            .setTextAlignment(TextAlignment.CENTER)
+                            .setTextAlignment(com.itextpdf.layout.properties.TextAlignment.CENTER)
             );
 
             document.add(new Paragraph("\n"));

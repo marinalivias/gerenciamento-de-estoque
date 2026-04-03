@@ -3,9 +3,9 @@ package model;
 import java.io.Serializable;
 
 public class ItemPedido implements Serializable {
-    private Produto produto;
-    private double quantidade;
-    private String condicao;
+    private final Produto produto;
+    private final double quantidade;
+    private final String condicao;
 
     public ItemPedido(Produto produto, double quantidade, String condicao) {
         this.produto = produto;

@@ -1,15 +1,14 @@
 package service;
 
-import model.Produto;
 import model.Categoria;
+import model.Produto;
 import util.ArquivoService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProdutoService {
 
-    private List<Produto> produtos;
+    private final List<Produto> produtos;
 
     public ProdutoService() {
         produtos = ArquivoService.carregar("produtos.dat");
