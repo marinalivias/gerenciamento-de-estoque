@@ -9,6 +9,7 @@ public class Produto implements Serializable {
     private final String unidade;
     private final double estoqueMinimo;
     private final double estoqueIdeal;
+
     private int id;
     private String status;
     private double quantidadeGastaMes;
@@ -19,37 +20,19 @@ public class Produto implements Serializable {
         this.unidade = unidade;
         this.estoqueMinimo = estoqueMinimo;
         this.estoqueIdeal = estoqueIdeal;
+        this.quantidadeGastaMes = 0;
     }
 
-    public String getNome() {
-        return nome;
-    }
+    public String getNome() { return nome; }
+    public Categoria getCategoria() { return categoria; }
+    public String getUnidade() { return unidade; }
+    public double getEstoqueMinimo() { return estoqueMinimo; }
+    public double getEstoqueIdeal() { return estoqueIdeal; }
+    public int getId() { return id; }
+    public String getStatus() { return status; }
+    public double getQuantidadeGastaMes() { return quantidadeGastaMes; }
 
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public String getUnidade() {
-        return unidade;
-    }
-
-    public double getEstoqueMinimo() {
-        return estoqueMinimo;
-    }
-
-    public double getEstoqueIdeal() {
-        return estoqueIdeal;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public double getQuantidadeGastaMes() {
-        return quantidadeGastaMes;
+    public void setQuantidadeGastaMes(double quantidadeGastaMes) {
+        this.quantidadeGastaMes = quantidadeGastaMes;
     }
 }

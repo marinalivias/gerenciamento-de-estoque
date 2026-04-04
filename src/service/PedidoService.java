@@ -5,25 +5,27 @@ import model.Pedido;
 import model.Produto;
 import util.ArquivoService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PedidoService {
 
-    private final List<Pedido> pedidos;
+    private List<Pedido> pedidos;
 
     public PedidoService() {
         pedidos = ArquivoService.carregar("pedidos.dat");
+        if (pedidos == null) pedidos = new ArrayList<>();
     }
 
-    public Pedido criarPedido(String data, String previsao) {
-        Pedido pedido = new Pedido(data, previsao);
+    public Pedido criarPedido(String data) {
+        Pedido pedido = new Pedido(data);
         pedidos.add(pedido);
         ArquivoService.salvar("pedidos.dat", pedidos);
         return pedido;
     }
 
-    public void adicionarItem(Pedido pedido, Produto produto, double quantidade, String condicao) {
-        pedido.adicionarItem(new ItemPedido(produto, quantidade, condicao));
+    public void adicionarItem(Pedido pedido, Produto produto, double quantidade) {
+        pedido.adicionarItem(new ItemPedido(produto, quantidade));
         ArquivoService.salvar("pedidos.dat", pedidos);
     }
 
