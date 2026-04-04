@@ -65,10 +65,7 @@ public class Main {
         System.out.print("Data do pedido: ");
         String data = sc.nextLine();
 
-        System.out.print("Previsão de entrega: ");
-        String previsao = sc.nextLine();
-
-        Pedido pedido = pedidoService.criarPedido(data, previsao);
+        Pedido pedido = pedidoService.criarPedido(data);
 
         boolean temItem = false;
 
@@ -78,19 +75,18 @@ public class Main {
 
                 double qtd = movimentacaoService.calcularQuantidadeReposicao(p);
 
-                pedidoService.adicionarItem(pedido, p, qtd, "AUTO");
+                pedidoService.adicionarItem(pedido, p, qtd);
 
                 System.out.println("Adicionado: " + p.getNome() + " | " + qtd);
 
                 temItem = true;
             }
-
         }
 
         if (!temItem) {
             System.out.println("Nenhum produto precisa reposição.");
         } else {
-            System.out.println("Pedido automático criado com sucesso!");
+            System.out.println("Pedido automático criado!");
             PdfService.gerarPdfPedido(pedido);
         }
     }
@@ -155,10 +151,7 @@ public class Main {
         System.out.print("Data do pedido: ");
         String data = sc.nextLine();
 
-        System.out.print("Previsão de entrega: ");
-        String previsao = sc.nextLine();
-
-        Pedido pedido = pedidoService.criarPedido(data, previsao);
+        Pedido pedido = pedidoService.criarPedido(data);
 
         String continuar;
         do {
@@ -186,10 +179,7 @@ public class Main {
                 return;
             }
 
-            System.out.print("Condição: ");
-            String condicao = sc.nextLine();
-
-            pedidoService.adicionarItem(pedido, produto, quantidade, condicao);
+            pedidoService.adicionarItem(pedido, produto, quantidade);
 
             System.out.print("Adicionar mais itens? (s/n): ");
             continuar = sc.nextLine();

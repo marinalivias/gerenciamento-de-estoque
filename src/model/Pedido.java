@@ -7,12 +7,10 @@ import java.util.List;
 public class Pedido implements Serializable {
 
     private final String dataPedido;
-    private final String previsaoEntrega;
     private final List<ItemPedido> itens;
 
-    public Pedido(String dataPedido, String previsaoEntrega) {
+    public Pedido(String dataPedido) {
         this.dataPedido = dataPedido;
-        this.previsaoEntrega = previsaoEntrega;
         this.itens = new ArrayList<>();
     }
 
@@ -22,22 +20,19 @@ public class Pedido implements Serializable {
 
     public void mostrarPedido() {
         System.out.println("Data do pedido: " + dataPedido);
-        System.out.println("Previsão de entrega: " + previsaoEntrega);
         System.out.println("Itens:");
 
         for (ItemPedido item : itens) {
-            System.out.println("- " + item.getProduto().getNome()
-                    + " | " + item.getQuantidade() + " " + item.getProduto().getUnidade()
-                    + " | " + item.getCondicao());
+            System.out.println("- " +
+                    item.getProduto().getNome() +
+                    " | Categoria: " + item.getProduto().getCategoria().getNome() +
+                    " | " + item.getQuantidade() +
+                    " " + item.getProduto().getUnidade());
         }
     }
 
     public String getDataPedido() {
         return dataPedido;
-    }
-
-    public String getPrevisaoEntrega() {
-        return previsaoEntrega;
     }
 
     public List<ItemPedido> getItens() {
