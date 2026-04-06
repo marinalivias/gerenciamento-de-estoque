@@ -11,8 +11,8 @@ import service.ProdutoService;
 
 public class MovimentacaoView {
 
-    private ProdutoService produtoService = new ProdutoService();
-    private MovimentacaoService movimentacaoService = new MovimentacaoService();
+    private ProdutoService produtoService = ProdutoService.getInstance();
+    private MovimentacaoService movimentacaoService = MovimentacaoService.getInstance();
 
     public void mostrar() {
 
@@ -31,6 +31,11 @@ public class MovimentacaoView {
 
         salvar.setOnAction(e -> {
             try {
+                if (produto.getValue() == null || tipo.getValue() == null) {
+                    System.out.println("Preencha todos os campos");
+                    return;
+                }
+
                 double qtd = Double.parseDouble(quantidade.getText());
 
                 if (tipo.getValue().equals("ENTRADA")) {

@@ -11,8 +11,8 @@ import service.ProdutoService;
 
 public class ProdutoFormView {
 
-    private ProdutoService produtoService = new ProdutoService();
-    private CategoriaService categoriaService = new CategoriaService();
+    private ProdutoService produtoService = ProdutoService.getInstance();
+    private CategoriaService categoriaService = new CategoriaService(); // ok por enquanto
 
     public void mostrar() {
 
@@ -37,6 +37,11 @@ public class ProdutoFormView {
 
         salvar.setOnAction(e -> {
             try {
+                if (categoria.getValue() == null) {
+                    System.out.println("Selecione uma categoria");
+                    return;
+                }
+
                 produtoService.criarProduto(
                         nome.getText(),
                         categoria.getValue(),
@@ -44,7 +49,9 @@ public class ProdutoFormView {
                         Double.parseDouble(minimo.getText()),
                         Double.parseDouble(ideal.getText())
                 );
+
                 stage.close();
+
             } catch (Exception ex) {
                 System.out.println("Erro ao cadastrar produto");
             }

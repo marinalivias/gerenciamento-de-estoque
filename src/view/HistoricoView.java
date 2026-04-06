@@ -12,7 +12,7 @@ import service.MovimentacaoService;
 
 public class HistoricoView {
 
-    private MovimentacaoService movimentacaoService = new MovimentacaoService();
+    private MovimentacaoService movimentacaoService = MovimentacaoService.getInstance();
 
     public void mostrar() {
 

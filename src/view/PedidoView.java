@@ -14,13 +14,12 @@ import util.PdfService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class PedidoView {
 
-    private ProdutoService produtoService = new ProdutoService();
-    private PedidoService pedidoService = new PedidoService();
-    private MovimentacaoService movimentacaoService = new MovimentacaoService();
+    private ProdutoService produtoService = ProdutoService.getInstance();
+    private PedidoService pedidoService = new PedidoService(); // pode manter por enquanto
+    private MovimentacaoService movimentacaoService = MovimentacaoService.getInstance();
 
     public void mostrar() {
 
@@ -34,8 +33,6 @@ public class PedidoView {
 
         Button adicionar = new Button("Adicionar");
 
-        List<Produto> produtos = produtoService.listarProdutos();
-
         String data = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 
@@ -43,11 +40,21 @@ public class PedidoView {
 
         adicionar.setOnAction(e -> {
             try {
+                if (produto.getValue() == null) {
+                    System.out.println("Selecione um produto");
+                    return;
+                }
+
+                double qtd = Double.parseDouble(quantidade.getText());
+
                 pedidoService.adicionarItem(
                         pedido,
                         produto.getValue(),
-                        Double.parseDouble(quantidade.getText())
+                        qtd
                 );
+
+                quantidade.clear();
+
             } catch (Exception ex) {
                 System.out.println("Erro ao adicionar item");
             }
