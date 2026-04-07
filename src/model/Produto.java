@@ -4,34 +4,38 @@ import java.io.Serializable;
 
 public class Produto implements Serializable {
 
-    private final String nome;
-    private final Categoria categoria;
-    private final String unidade;
-    private final double estoqueMinimo;
-    private final double estoqueIdeal;
+    private String nome;
+    private String categoria;
 
-    private int id;
-    private String status;
+    private double estoqueMinimo;
+    private double estoqueIdeal;
+    private double estoqueAtual;
+
+    private String controle;
     private double quantidadeGastaMes;
 
-    public Produto(String nome, Categoria categoria, String unidade, double estoqueMinimo, double estoqueIdeal) {
+    public Produto(String nome, String categoria, double estoqueMinimo, double estoqueIdeal) {
         this.nome = nome;
         this.categoria = categoria;
-        this.unidade = unidade;
         this.estoqueMinimo = estoqueMinimo;
         this.estoqueIdeal = estoqueIdeal;
+        this.estoqueAtual = 0;
+        this.controle = "Mensal";
         this.quantidadeGastaMes = 0;
     }
 
     public String getNome() { return nome; }
-    public Categoria getCategoria() { return categoria; }
-    public String getUnidade() { return unidade; }
+    public String getCategoria() { return categoria; }
     public double getEstoqueMinimo() { return estoqueMinimo; }
     public double getEstoqueIdeal() { return estoqueIdeal; }
-    public int getId() { return id; }
-    public String getStatus() { return status; }
+    public double getEstoqueAtual() { return estoqueAtual; }
+    public String getControle() { return controle; }
     public double getQuantidadeGastaMes() { return quantidadeGastaMes; }
 
+    public void setNome(String nome) { this.nome = nome; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
+    public void setEstoqueAtual(double estoqueAtual) { this.estoqueAtual = estoqueAtual; }
+    public void setControle(String controle) { this.controle = controle; }
     public void setQuantidadeGastaMes(double quantidadeGastaMes) {
         this.quantidadeGastaMes = quantidadeGastaMes;
     }

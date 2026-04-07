@@ -25,9 +25,8 @@ public class Pedido implements Serializable {
         for (ItemPedido item : itens) {
             System.out.println("- " +
                     item.getProduto().getNome() +
-                    " | Categoria: " + item.getProduto().getCategoria().getNome() +
-                    " | " + item.getQuantidade() +
-                    " " + item.getProduto().getUnidade());
+                    " | Categoria: " + item.getProduto().getCategoria() +
+                    " | Quantidade: " + item.getQuantidade());
         }
     }
 

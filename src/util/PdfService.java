@@ -44,19 +44,17 @@ public class PdfService {
             document.add(new Paragraph("Data: " + pedido.getDataPedido()));
             document.add(new Paragraph("\n"));
 
-            Table table = new Table(UnitValue.createPercentArray(new float[]{3, 3, 2, 2}));
+            Table table = new Table(UnitValue.createPercentArray(new float[]{3, 3, 2}));
             table.setWidth(UnitValue.createPercentValue(100));
 
             table.addHeaderCell("Produto");
             table.addHeaderCell("Categoria");
             table.addHeaderCell("Qtd");
-            table.addHeaderCell("Unidade");
 
             for (ItemPedido item : pedido.getItens()) {
                 table.addCell(item.getProduto().getNome());
-                table.addCell(item.getProduto().getCategoria().getNome());
+                table.addCell(item.getProduto().getCategoria());
                 table.addCell(String.valueOf(item.getQuantidade()));
-                table.addCell(item.getProduto().getUnidade());
             }
 
             document.add(table);

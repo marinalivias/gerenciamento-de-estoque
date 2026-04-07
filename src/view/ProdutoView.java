@@ -3,6 +3,7 @@ package view;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import model.Produto;
@@ -19,12 +20,23 @@ public class ProdutoView {
     public VBox getView() {
 
         Label titulo = new Label("Controle de Estoque");
-        titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        titulo.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
+
+        HBox header = new HBox(titulo);
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.setPadding(new Insets(0, 0, 10, 0));
 
         criarTabela();
         atualizarTabela();
 
-        VBox layout = new VBox(15, titulo, tabela);
+        VBox containerTabela = new VBox(tabela);
+        containerTabela.setStyle("""
+            -fx-background-color: white;
+            -fx-background-radius: 10;
+            -fx-padding: 10;
+        """);
+
+        VBox layout = new VBox(15, header, containerTabela);
         layout.setPadding(new Insets(20));
         layout.setStyle("-fx-background-color: #f3f4f6;");
 
@@ -35,39 +47,37 @@ public class ProdutoView {
 
         tabela.getColumns().clear();
 
-        // Nome
-        TableColumn<Produto, String> nomeCol = new TableColumn<>("Nome");
+        TableColumn<Produto, String> nomeCol = new TableColumn<>("Produto");
         nomeCol.setCellValueFactory(c ->
                 new SimpleStringProperty(c.getValue().getNome())
         );
 
-        // Unidade
-        TableColumn<Produto, String> unidadeCol = new TableColumn<>("Unidade");
-        unidadeCol.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getUnidade())
+        TableColumn<Produto, String> categoriaCol = new TableColumn<>("Categoria");
+        categoriaCol.setCellValueFactory(c ->
+                new SimpleStringProperty(
+                        c.getValue().getCategoria() != null
+                                ? c.getValue().getCategoria()
+                                : "Sem categoria"
+                )
         );
 
-        // Estoque mínimo
-        TableColumn<Produto, Double> minCol = new TableColumn<>("Mínimo");
-        minCol.setCellValueFactory(c ->
-                new SimpleDoubleProperty(c.getValue().getEstoqueMinimo()).asObject()
-        );
-
-        // Estoque ideal
-        TableColumn<Produto, Double> idealCol = new TableColumn<>("Regulador");
-        idealCol.setCellValueFactory(c ->
-                new SimpleDoubleProperty(c.getValue().getEstoqueIdeal()).asObject()
-        );
-
-        // Estoque atual
-        TableColumn<Produto, Double> atualCol = new TableColumn<>("Atual");
+        TableColumn<Produto, Double> atualCol = new TableColumn<>("Estoque Atual");
         atualCol.setCellValueFactory(c ->
                 new SimpleDoubleProperty(
                         movimentacaoService.calcularEstoque(c.getValue())
                 ).asObject()
         );
 
-        // Status
+        TableColumn<Produto, Double> idealCol = new TableColumn<>("Estoque Regulador");
+        idealCol.setCellValueFactory(c ->
+                new SimpleDoubleProperty(c.getValue().getEstoqueIdeal()).asObject()
+        );
+
+        TableColumn<Produto, Double> minCol = new TableColumn<>("Estoque Mínimo");
+        minCol.setCellValueFactory(c ->
+                new SimpleDoubleProperty(c.getValue().getEstoqueMinimo()).asObject()
+        );
+
         TableColumn<Produto, String> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(c ->
                 new SimpleStringProperty(
@@ -75,13 +85,32 @@ public class ProdutoView {
                 )
         );
 
-        // Consumo mensal
+        statusCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String status, boolean empty) {
+                super.updateItem(status, empty);
+
+                if (empty || status == null) {
+                    setText(null);
+                    setStyle("");
+                    return;
+                }
+
+                setText(status);
+
+                switch (status) {
+                    case "BAIXO" -> setStyle("-fx-text-fill: #ef4444; -fx-font-weight: bold;");
+                    case "OK" -> setStyle("-fx-text-fill: #10b981; -fx-font-weight: bold;");
+                    case "ALTO" -> setStyle("-fx-text-fill: #f59e0b; -fx-font-weight: bold;");
+                }
+            }
+        });
+
         TableColumn<Produto, Double> consumoCol = new TableColumn<>("Gasto/Mês");
         consumoCol.setCellValueFactory(c ->
                 new SimpleDoubleProperty(c.getValue().getQuantidadeGastaMes()).asObject()
         );
 
-        // 🔥 AÇÕES
         TableColumn<Produto, Void> acaoCol = new TableColumn<>("Controle");
 
         acaoCol.setCellFactory(param -> new TableCell<>() {
@@ -90,6 +119,9 @@ public class ProdutoView {
             private final Button saida = new Button("-");
 
             {
+                entrada.setStyle("-fx-background-color: #10b981; -fx-text-fill: white;");
+                saida.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white;");
+
                 entrada.setOnAction(e -> {
                     Produto p = getTableView().getItems().get(getIndex());
                     abrirPopup(p, true);
@@ -99,9 +131,6 @@ public class ProdutoView {
                     Produto p = getTableView().getItems().get(getIndex());
                     abrirPopup(p, false);
                 });
-
-                entrada.setStyle("-fx-background-color: #10b981; -fx-text-fill: white;");
-                saida.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white;");
             }
 
             private final HBox box = new HBox(5, entrada, saida);
@@ -114,8 +143,14 @@ public class ProdutoView {
         });
 
         tabela.getColumns().addAll(
-                nomeCol, unidadeCol, minCol, idealCol,
-                atualCol, statusCol, consumoCol, acaoCol
+                nomeCol,
+                categoriaCol,
+                atualCol,
+                idealCol,
+                minCol,
+                statusCol,
+                consumoCol,
+                acaoCol
         );
 
         tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -147,7 +182,6 @@ public class ProdutoView {
     }
 
     private void atualizarTabela() {
-        tabela.getItems().clear();
-        tabela.getItems().addAll(produtoService.listarProdutos());
+        tabela.setItems(FXCollections.observableArrayList(produtoService.listarProdutos()));
     }
 }

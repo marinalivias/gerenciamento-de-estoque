@@ -1,6 +1,5 @@
 package service;
 
-import model.Categoria;
 import model.Produto;
 import util.ArquivoService;
 
@@ -13,7 +12,6 @@ public class ProdutoService {
 
     private final List<Produto> produtos;
 
-    // CONSTRUTOR PRIVADO
     private ProdutoService() {
 
         List<Produto> lista = ArquivoService.carregar("produtos.dat");
@@ -25,7 +23,6 @@ public class ProdutoService {
         this.produtos = lista;
     }
 
-    // SINGLETON
     public static ProdutoService getInstance() {
         if (instance == null) {
             instance = new ProdutoService();
@@ -33,10 +30,8 @@ public class ProdutoService {
         return instance;
     }
 
-    public void criarProduto(String nome, Categoria categoria, String unidade,
-                             double estoqueMinimo, double estoqueIdeal) {
-
-        produtos.add(new Produto(nome, categoria, unidade, estoqueMinimo, estoqueIdeal));
+    public void adicionarProduto(Produto produto) {
+        produtos.add(produto);
         ArquivoService.salvar("produtos.dat", produtos);
     }
 
