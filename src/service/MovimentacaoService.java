@@ -39,10 +39,19 @@ public class MovimentacaoService {
         ArquivoService.salvar("movimentacoes.dat", movimentacoes);
     }
 
-    public void registrarSaida(Produto produto, double quantidade) {
+    public boolean registrarSaida(Produto produto, double quantidade) {
+
+        double estoqueAtual = calcularEstoque(produto);
+
+        if (quantidade > estoqueAtual) {
+            return false; // não deixa sair mais do que tem
+        }
+
         String data = LocalDateTime.now().format(formatter);
         movimentacoes.add(new Movimentacao(produto, quantidade, "SAIDA", data));
         ArquivoService.salvar("movimentacoes.dat", movimentacoes);
+
+        return true;
     }
 
     public double calcularEstoque(Produto produto) {

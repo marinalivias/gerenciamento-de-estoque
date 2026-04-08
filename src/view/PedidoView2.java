@@ -1,11 +1,17 @@
 package view;
 
-import javafx.scene.control.Label;
+import javafx.geometry.Insets;
 import javafx.scene.layout.VBox;
 
 public class PedidoView2 {
 
     public VBox getView() {
-        return new VBox(new Label("Pedidos + Relatórios"));
+
+        PedidoView pedidoView = new PedidoView();
+
+        VBox layout = new VBox(pedidoView.getView());
+        layout.setPadding(new Insets(20));
+
+        return layout;
     }
 }
