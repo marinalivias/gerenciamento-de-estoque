@@ -17,7 +17,6 @@ public class MovimentacaoService {
 
     private List<Movimentacao> movimentacoes;
 
-    // construtor privado
     private MovimentacaoService() {
         movimentacoes = ArquivoService.carregar("movimentacoes.dat");
         if (movimentacoes == null) {
@@ -44,7 +43,7 @@ public class MovimentacaoService {
         double estoqueAtual = calcularEstoque(produto);
 
         if (quantidade > estoqueAtual) {
-            return false; // não deixa sair mais do que tem
+            return false;
         }
 
         String data = LocalDateTime.now().format(formatter);

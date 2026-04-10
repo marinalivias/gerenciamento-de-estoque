@@ -6,7 +6,7 @@ public class Movimentacao implements Serializable {
 
     private final Produto produto;
     private final double quantidade;
-    private final String tipo; // "ENTRADA" ou "SAIDA"
+    private final String tipo;
     private final String data;
 
     public Movimentacao(Produto produto, double quantidade, String tipo, String data) {

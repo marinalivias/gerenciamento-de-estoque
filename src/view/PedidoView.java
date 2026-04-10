@@ -6,7 +6,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import model.Pedido;
 import model.Produto;
-import service.MovimentacaoService;
 import service.PedidoService;
 import service.ProdutoService;
 import util.PdfService;
@@ -18,61 +17,45 @@ public class PedidoView {
 
     private ProdutoService produtoService = ProdutoService.getInstance();
     private PedidoService pedidoService = new PedidoService();
-    private MovimentacaoService movimentacaoService = MovimentacaoService.getInstance();
 
     public VBox getView() {
 
         ComboBox<Produto> produto = new ComboBox<>();
         produto.setItems(FXCollections.observableArrayList(produtoService.listarProdutos()));
-        produto.setPromptText("Selecione um produto");
 
-        TextField quantidade = new TextField();
-        quantidade.setPromptText("Quantidade");
+        TextField qtd = new TextField();
 
-        Button adicionar = new Button("Adicionar Item");
+        Button add = new Button("Adicionar");
+        Button pdf = new Button("Gerar PDF");
 
-        String data = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        StyleUtil.estilizarBotao(add);
+        StyleUtil.estilizarBotao(pdf);
 
-        Pedido pedido = pedidoService.criarPedido(data);
+        Pedido pedido = pedidoService.criarPedido(
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+        );
 
         Label status = new Label();
 
-        adicionar.setOnAction(e -> {
-            try {
-                if (produto.getValue() == null) {
-                    status.setText("Selecione um produto");
-                    return;
-                }
-
-                double qtd = Double.parseDouble(quantidade.getText());
-
-                pedidoService.adicionarItem(pedido, produto.getValue(), qtd);
-
-                quantidade.clear();
-                status.setText("Item adicionado!");
-
-            } catch (Exception ex) {
-                status.setText("Erro ao adicionar item");
-            }
+        add.setOnAction(e -> {
+            pedidoService.adicionarItem(pedido, produto.getValue(), Double.parseDouble(qtd.getText()));
+            status.setText("Item adicionado");
         });
 
-        Button gerar = new Button("Gerar PDF");
-
-        gerar.setOnAction(e -> {
+        pdf.setOnAction(e -> {
             PdfService.gerarPdfPedido(pedido);
-            status.setText("PDF gerado!");
+            status.setText("PDF gerado");
         });
 
-        VBox layout = new VBox(10,
-                produto,
-                quantidade,
-                adicionar,
-                gerar,
-                status
-        );
+        VBox card = new VBox(10, produto, qtd, add, pdf, status);
+        StyleUtil.estilizarCard(card);
 
+        Label titulo = new Label("Pedidos");
+        titulo.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        VBox layout = new VBox(20, titulo, card);
         layout.setPadding(new Insets(20));
+        layout.setStyle(StyleUtil.background());
 
         return layout;
     }

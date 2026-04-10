@@ -15,82 +15,65 @@ public class EstoqueControleView {
 
     public VBox getView() {
 
-        // 🔽 Seleção de produto
-        ComboBox<Produto> produtoBox = new ComboBox<>();
-        produtoBox.setItems(FXCollections.observableArrayList(produtoService.listarProdutos()));
-        produtoBox.setPromptText("Selecione o produto");
+        ComboBox<Produto> produto = new ComboBox<>();
+        produto.setItems(FXCollections.observableArrayList(produtoService.listarProdutos()));
 
-        // 🔽 Tipo (Entrada/Saída)
-        ComboBox<String> tipoBox = new ComboBox<>();
-        tipoBox.setItems(FXCollections.observableArrayList("ENTRADA", "SAIDA"));
-        tipoBox.setPromptText("Tipo de movimentação");
+        ComboBox<String> tipo = new ComboBox<>();
+        tipo.setItems(FXCollections.observableArrayList("ENTRADA", "SAIDA"));
 
-        // 🔽 Quantidade
-        TextField quantidadeField = new TextField();
-        quantidadeField.setPromptText("Quantidade");
+        TextField qtd = new TextField();
+        qtd.setPromptText("Quantidade");
 
-        // 🔽 Botão
-        Button registrarBtn = new Button("Registrar");
+        Button registrar = new Button("Registrar");
+        Button atualizar = new Button("Atualizar Histórico");
 
         Label status = new Label();
 
-        // 🔽 Ação
-        registrarBtn.setOnAction(e -> {
+        registrar.setOnAction(e -> {
             try {
-                Produto produto = produtoBox.getValue();
-                String tipo = tipoBox.getValue();
-                double qtd = Double.parseDouble(quantidadeField.getText());
+                double q = Double.parseDouble(qtd.getText());
 
-                if (produto == null || tipo == null) {
-                    status.setText("Preencha todos os campos!");
-                    return;
-                }
-
-                if (tipo.equals("ENTRADA")) {
-                    movimentacaoService.registrarEntrada(produto, qtd);
+                if (tipo.getValue().equals("ENTRADA")) {
+                    movimentacaoService.registrarEntrada(produto.getValue(), q);
                 } else {
-                    movimentacaoService.registrarSaida(produto, qtd);
+                    if (!movimentacaoService.registrarSaida(produto.getValue(), q)) {
+                        status.setText("Estoque insuficiente");
+                        return;
+                    }
                 }
 
-                quantidadeField.clear();
-                status.setText("Movimentação registrada!");
+                status.setText("Sucesso!");
+                qtd.clear();
 
             } catch (Exception ex) {
-                status.setText("Erro ao registrar!");
+                status.setText("Erro");
             }
         });
 
-        // 🔽 Histórico
-        ListView<String> historicoList = new ListView<>();
+        ListView<String> lista = new ListView<>();
 
-        Button atualizarHistorico = new Button("Atualizar Histórico");
-
-        atualizarHistorico.setOnAction(e -> {
-            historicoList.getItems().clear();
-
-            movimentacaoService.listarMovimentacoes().forEach(m -> {
-                historicoList.getItems().add(
-                        m.getData() + " - " +
-                                m.getProduto().getNome() + " - " +
-                                m.getTipo() + " - " +
-                                m.getQuantidade()
-                );
-            });
+        atualizar.setOnAction(e -> {
+            lista.getItems().clear();
+            movimentacaoService.listarMovimentacoes().forEach(m ->
+                    lista.getItems().add(
+                            m.getData() + " - " +
+                                    m.getProduto().getNome() + " - " +
+                                    m.getTipo() + " - " +
+                                    m.getQuantidade()
+                    )
+            );
         });
 
-        VBox layout = new VBox(10,
-                new Label("Controle de Estoque"),
-                produtoBox,
-                tipoBox,
-                quantidadeField,
-                registrarBtn,
-                status,
-                new Separator(),
-                new Label("Histórico"),
-                atualizarHistorico,
-                historicoList
-        );
+        VBox form = new VBox(produto, tipo, qtd, registrar, status);
+        form.getStyleClass().add("card");
 
+        VBox hist = new VBox(atualizar, lista);
+        hist.getStyleClass().add("card");
+
+        Label titulo = new Label("Controle de Estoque");
+        titulo.getStyleClass().add("titulo");
+
+        VBox layout = new VBox(20, titulo, form, hist);
         layout.setPadding(new Insets(20));
 
         return layout;

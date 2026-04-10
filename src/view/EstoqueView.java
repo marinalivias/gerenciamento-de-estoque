@@ -13,9 +13,13 @@ public class EstoqueView {
     public void mostrar(Stage stage) {
 
         root.setLeft(criarSidebar());
-        root.setCenter(new DashboardView().getView()); // tela inicial
+        root.setCenter(new DashboardView().getView());
 
         Scene scene = new Scene(root, 1200, 600);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/style.css").toExternalForm()
+        );
 
         stage.setScene(scene);
         stage.setTitle("Sistema de Estoque");

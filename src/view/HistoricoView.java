@@ -1,12 +1,10 @@
 package view;
 
-import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Label;
 import javafx.collections.FXCollections;
-import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.geometry.Insets;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import model.Movimentacao;
 import service.MovimentacaoService;
 
@@ -14,42 +12,40 @@ public class HistoricoView {
 
     private MovimentacaoService movimentacaoService = MovimentacaoService.getInstance();
 
-    public void mostrar() {
+    public VBox getView() {
 
-        Stage stage = new Stage();
+        ListView<String> lista = new ListView<>();
 
-        TableView<Movimentacao> tabela = new TableView<>();
+        movimentacaoService.listarMovimentacoes().forEach(m -> {
+            lista.getItems().add(
+                    m.getData() + " | " +
+                            m.getProduto().getNome() + " | " +
+                            m.getTipo() + " | " +
+                            m.getQuantidade()
+            );
+        });
 
-        TableColumn<Movimentacao, String> produtoCol = new TableColumn<>("Produto");
-        produtoCol.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getProduto().getNome())
+        VBox card = new VBox(10,
+                new Label("Histórico"),
+                lista
         );
 
-        TableColumn<Movimentacao, String> tipoCol = new TableColumn<>("Tipo");
-        tipoCol.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getTipo())
-        );
+        estilizarCard(card);
 
-        TableColumn<Movimentacao, String> qtdCol = new TableColumn<>("Quantidade");
-        qtdCol.setCellValueFactory(c ->
-                new SimpleStringProperty(String.valueOf(c.getValue().getQuantidade()))
-        );
+        VBox layout = new VBox(card);
+        layout.setPadding(new Insets(20));
+        layout.setStyle("-fx-background-color: #f5f6fa;");
 
-        TableColumn<Movimentacao, String> dataCol = new TableColumn<>("Data");
-        dataCol.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getData())
-        );
-
-        tabela.getColumns().addAll(produtoCol, tipoCol, qtdCol, dataCol);
-
-        tabela.setItems(FXCollections.observableArrayList(
-                movimentacaoService.listarMovimentacoes()
-        ));
-
-        VBox layout = new VBox(tabela);
-
-        stage.setScene(new Scene(layout, 600, 400));
-        stage.setTitle("Histórico");
-        stage.show();
+        return layout;
     }
+
+    private void estilizarCard(VBox card) {
+        card.setPadding(new Insets(15));
+        card.setStyle("""
+        -fx-background-color: white;
+        -fx-background-radius: 12;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);
+    """);
+    }
+
 }
