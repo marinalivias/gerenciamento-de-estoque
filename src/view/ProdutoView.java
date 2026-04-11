@@ -19,26 +19,34 @@ public class ProdutoView {
 
     public VBox getView() {
 
-        Label titulo = new Label("Controle de Estoque");
-        titulo.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
+        ComboBox<String> filtroCategoria = new ComboBox<>();
+        filtroCategoria.setPromptText("Filtrar por categoria");
 
-        HBox header = new HBox(titulo);
+        filtroCategoria.getItems().add("Todas");
+
+        produtoService.listarProdutos().stream()
+                .map(Produto::getCategoria)
+                .distinct()
+                .forEach(filtroCategoria.getItems()::add);
+
+        filtroCategoria.setValue("Todas");
+
+        Label titulo = new Label("Estoque");
+        titulo.getStyleClass().add("titulo");
+
+        HBox header = new HBox(10, titulo, filtroCategoria);
         header.setAlignment(Pos.CENTER_LEFT);
-        header.setPadding(new Insets(0, 0, 10, 0));
 
         criarTabela();
-        atualizarTabela();
+        atualizarTabela(filtroCategoria);
+
+        filtroCategoria.setOnAction(e -> atualizarTabela(filtroCategoria));
 
         VBox containerTabela = new VBox(tabela);
-        containerTabela.setStyle("""
-            -fx-background-color: white;
-            -fx-background-radius: 10;
-            -fx-padding: 10;
-        """);
+        containerTabela.getStyleClass().add("card");
 
         VBox layout = new VBox(15, header, containerTabela);
         layout.setPadding(new Insets(20));
-        layout.setStyle("-fx-background-color: #f3f4f6;");
 
         return layout;
     }
@@ -68,12 +76,12 @@ public class ProdutoView {
                 ).asObject()
         );
 
-        TableColumn<Produto, Double> idealCol = new TableColumn<>("Estoque Regulador");
+        TableColumn<Produto, Double> idealCol = new TableColumn<>("Ideal");
         idealCol.setCellValueFactory(c ->
                 new SimpleDoubleProperty(c.getValue().getEstoqueIdeal()).asObject()
         );
 
-        TableColumn<Produto, Double> minCol = new TableColumn<>("Estoque Mínimo");
+        TableColumn<Produto, Double> minCol = new TableColumn<>("Mínimo");
         minCol.setCellValueFactory(c ->
                 new SimpleDoubleProperty(c.getValue().getEstoqueMinimo()).asObject()
         );
@@ -85,33 +93,7 @@ public class ProdutoView {
                 )
         );
 
-        statusCol.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String status, boolean empty) {
-                super.updateItem(status, empty);
-
-                if (empty || status == null) {
-                    setText(null);
-                    setStyle("");
-                    return;
-                }
-
-                setText(status);
-
-                switch (status) {
-                    case "BAIXO" -> setStyle("-fx-text-fill: #ef4444; -fx-font-weight: bold;");
-                    case "OK" -> setStyle("-fx-text-fill: #10b981; -fx-font-weight: bold;");
-                    case "ALTO" -> setStyle("-fx-text-fill: #f59e0b; -fx-font-weight: bold;");
-                }
-            }
-        });
-
-        TableColumn<Produto, Double> consumoCol = new TableColumn<>("Gasto/Mês");
-        consumoCol.setCellValueFactory(c ->
-                new SimpleDoubleProperty(c.getValue().getQuantidadeGastaMes()).asObject()
-        );
-
-        TableColumn<Produto, Void> acaoCol = new TableColumn<>("Controle");
+        TableColumn<Produto, Void> acaoCol = new TableColumn<>("Ações");
 
         acaoCol.setCellFactory(param -> new TableCell<>() {
 
@@ -119,8 +101,8 @@ public class ProdutoView {
             private final Button saida = new Button("-");
 
             {
-                entrada.setStyle("-fx-background-color: #10b981; -fx-text-fill: white;");
-                saida.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white;");
+                entrada.getStyleClass().add("button");
+                saida.getStyleClass().add("button");
 
                 entrada.setOnAction(e -> {
                     Produto p = getTableView().getItems().get(getIndex());
@@ -149,7 +131,6 @@ public class ProdutoView {
                 idealCol,
                 minCol,
                 statusCol,
-                consumoCol,
                 acaoCol
         );
 
@@ -173,7 +154,7 @@ public class ProdutoView {
                     movimentacaoService.registrarSaida(produto, qtd);
                 }
 
-                atualizarTabela();
+                atualizarTabela(null);
 
             } catch (Exception e) {
                 System.out.println("Valor inválido");
@@ -181,7 +162,16 @@ public class ProdutoView {
         });
     }
 
-    private void atualizarTabela() {
-        tabela.setItems(FXCollections.observableArrayList(produtoService.listarProdutos()));
+    private void atualizarTabela(ComboBox<String> filtro) {
+
+        if (filtro == null || filtro.getValue() == null || filtro.getValue().equals("Todas")) {
+            tabela.setItems(FXCollections.observableArrayList(produtoService.listarProdutos()));
+        } else {
+            tabela.setItems(FXCollections.observableArrayList(
+                    produtoService.listarProdutos().stream()
+                            .filter(p -> filtro.getValue().equals(p.getCategoria()))
+                            .toList()
+            ));
+        }
     }
 }

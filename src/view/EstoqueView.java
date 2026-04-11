@@ -40,17 +40,26 @@ public class EstoqueView {
                 trocarTela(new AdicionarView().getView())
         );
 
-        Button controle = criarBotao("Controle de Estoque", () ->
-                trocarTela(new ControleView().getView())
+        Button controle = criarBotao("Controle", () ->
+                trocarTela(new EstoqueControleView().getView())
         );
 
         Button pedidos = criarBotao("Pedidos", () ->
-                trocarTela(new PedidoView2().getView())
+                trocarTela(new PedidoView().getView())
         );
 
-        VBox menu = new VBox(15, dashboard, estoque, adicionar, controle, pedidos);
+        Button darkMode = new Button("🌙");
+        darkMode.setOnAction(e -> {
+            if (root.getStyleClass().contains("dark")) {
+                root.getStyleClass().remove("dark");
+            } else {
+                root.getStyleClass().add("dark");
+            }
+        });
+
+        VBox menu = new VBox(15, dashboard, estoque, adicionar, controle, pedidos, darkMode);
         menu.setPadding(new Insets(20));
-        menu.setStyle("-fx-background-color: #1f2937;");
+        menu.getStyleClass().add("sidebar");
 
         return menu;
     }
@@ -59,26 +68,39 @@ public class EstoqueView {
         Button btn = new Button(texto);
         btn.setMaxWidth(Double.MAX_VALUE);
 
-        btn.setStyle("""
-            -fx-background-color: transparent;
-            -fx-text-fill: white;
-            -fx-font-size: 14px;
-        """);
-
-        btn.setOnMouseEntered(e ->
-                btn.setStyle("-fx-background-color: #374151; -fx-text-fill: white;")
-        );
-
-        btn.setOnMouseExited(e ->
-                btn.setStyle("-fx-background-color: transparent; -fx-text-fill: white;")
-        );
-
+        btn.getStyleClass().add("menu-button");
         btn.setOnAction(e -> acao.run());
 
         return btn;
     }
 
-    private void trocarTela(Pane tela) {
-        root.setCenter(tela);
+    private void trocarTela(Pane novaTela) {
+
+        Pane telaAtual = (Pane) root.getCenter();
+
+        if (telaAtual != null) {
+            javafx.animation.FadeTransition fadeOut =
+                    new javafx.animation.FadeTransition(javafx.util.Duration.millis(200), telaAtual);
+
+            fadeOut.setFromValue(1);
+            fadeOut.setToValue(0);
+
+            fadeOut.setOnFinished(e -> {
+
+                root.setCenter(novaTela);
+
+                javafx.animation.FadeTransition fadeIn =
+                        new javafx.animation.FadeTransition(javafx.util.Duration.millis(200), novaTela);
+
+                fadeIn.setFromValue(0);
+                fadeIn.setToValue(1);
+                fadeIn.play();
+            });
+
+            fadeOut.play();
+
+        } else {
+            root.setCenter(novaTela);
+        }
     }
 }

@@ -4,16 +4,18 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import model.Produto;
+import service.MovimentacaoService;
 import service.ProdutoService;
 
 public class AdicionarView {
 
     private ProdutoService produtoService = ProdutoService.getInstance();
+    private MovimentacaoService movimentacaoService = MovimentacaoService.getInstance();
 
     public VBox getView() {
 
         Label titulo = new Label("Novo Produto");
-        titulo.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;");
+        titulo.getStyleClass().add("titulo");
 
         TextField nome = new TextField();
         nome.setPromptText("Nome do produto");
@@ -28,14 +30,15 @@ public class AdicionarView {
         ideal.setPromptText("Estoque regulador");
 
         TextField atual = new TextField();
-        atual.setPromptText("Estoque atual (opcional)");
+        atual.setPromptText("Estoque inicial");
 
         ComboBox<String> controle = new ComboBox<>();
         controle.getItems().addAll("Semanal", "Quinzenal", "Mensal");
         controle.setValue("Mensal");
 
         Button salvar = new Button("Salvar");
-        salvar.setStyle("-fx-background-color: #10b981; -fx-text-fill: white;");
+
+        Label status = new Label();
 
         salvar.setOnAction(e -> {
             try {
@@ -47,13 +50,16 @@ public class AdicionarView {
                         Double.parseDouble(ideal.getText())
                 );
 
-                if (!atual.getText().isEmpty()) {
-                    p.setEstoqueAtual(Double.parseDouble(atual.getText()));
-                }
-
                 p.setControle(controle.getValue());
 
                 produtoService.adicionarProduto(p);
+
+                if (!atual.getText().isEmpty()) {
+                    double qtd = Double.parseDouble(atual.getText());
+                    movimentacaoService.registrarEntrada(p, qtd);
+                }
+
+                status.setText("Produto cadastrado!");
 
                 nome.clear();
                 categoria.clear();
@@ -63,7 +69,7 @@ public class AdicionarView {
                 controle.setValue("Mensal");
 
             } catch (Exception ex) {
-                System.out.println("Erro ao salvar produto");
+                status.setText("Erro ao cadastrar produto");
             }
         });
 
@@ -83,22 +89,17 @@ public class AdicionarView {
         form.add(new Label("Regulador"), 0, 3);
         form.add(ideal, 1, 3);
 
-        form.add(new Label("Estoque Atual"), 0, 4);
+        form.add(new Label("Estoque Inicial"), 0, 4);
         form.add(atual, 1, 4);
 
         form.add(new Label("Controle"), 0, 5);
         form.add(controle, 1, 5);
 
-        VBox container = new VBox(20, titulo, form, salvar);
-        container.setPadding(new Insets(20));
-        container.setStyle("""
-            -fx-background-color: white;
-            -fx-background-radius: 10;
-        """);
+        VBox card = new VBox(15, titulo, form, salvar, status);
+        card.getStyleClass().add("card");
 
-        VBox layout = new VBox(container);
+        VBox layout = new VBox(card);
         layout.setPadding(new Insets(20));
-        layout.setStyle("-fx-background-color: #f3f4f6;");
 
         return layout;
     }

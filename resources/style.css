@@ -3,12 +3,23 @@
     -fx-background-color: #f5f6fa;
 }
 
+/* DARK MODE */
+.root.dark {
+    -fx-background-color: #1e1e2f;
+}
+
+/* TITULO */
 .titulo {
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: #2f3640;
 }
 
+.root.dark .titulo {
+    -fx-text-fill: white;
+}
+
+/* CARD */
 .card {
     -fx-background-color: white;
     -fx-background-radius: 12;
@@ -17,24 +28,42 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);
 }
 
+.root.dark .card {
+    -fx-background-color: #2b2b3c;
+}
+
+/* BOTÃO */
 .button {
     -fx-background-color: #4078ff;
     -fx-text-fill: white;
     -fx-background-radius: 8;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
 .button:hover {
     -fx-background-color: #315fd4;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 
+/* INPUT */
 .text-field, .combo-box {
     -fx-background-radius: 8;
     -fx-border-radius: 8;
     -fx-border-color: #dcdde1;
 }
 
-.list-view {
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
+/* SIDEBAR */
+.sidebar {
+    -fx-background-color: #1f2937;
+}
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.menu-button:hover {
+    -fx-background-color: #374151;
 }
