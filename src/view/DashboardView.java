@@ -32,7 +32,6 @@ public class DashboardView {
 
         long ok = total - criticos - baixos;
 
-        // 🎨 CARDS
         HBox cards = new HBox(15,
                 criarCard("Total de Produtos", String.valueOf(total), "#3b82f6"),
                 criarCard("Produtos Críticos", String.valueOf(criticos), "#ef4444"),

@@ -24,7 +24,6 @@ public class MovimentacaoService {
         }
     }
 
-    // singleton
     public static MovimentacaoService getInstance() {
         if (instance == null) {
             instance = new MovimentacaoService();

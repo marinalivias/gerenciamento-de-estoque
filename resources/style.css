@@ -3,9 +3,9 @@
     -fx-background-color: #f5f6fa;
 }
 
-/* DARK MODE */
+/* DARK MODE BASE */
 .root.dark {
-    -fx-background-color: #1e1e2f;
+    -fx-background-color: #0f172a;
 }
 
 /* TITULO */
@@ -25,11 +25,10 @@
     -fx-background-radius: 12;
     -fx-padding: 15;
     -fx-spacing: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);
 }
 
 .root.dark .card {
-    -fx-background-color: #2b2b3c;
+    -fx-background-color: #1e293b;
 }
 
 /* BOTÃO */
@@ -38,32 +37,74 @@
     -fx-text-fill: white;
     -fx-background-radius: 8;
     -fx-font-weight: bold;
-    -fx-cursor: hand;
 }
 
 .button:hover {
     -fx-background-color: #315fd4;
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
 }
 
 /* INPUT */
-.text-field, .combo-box {
+.text-field {
     -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-border-color: #dcdde1;
+}
+
+.root.dark .text-field {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: white;
 }
 
 /* SIDEBAR */
 .sidebar {
-    -fx-background-color: #1f2937;
+    -fx-background-color: #0f172a;
+    -fx-pref-width: 230;
 }
 
+/* MENU */
 .menu-button {
     -fx-background-color: transparent;
-    -fx-text-fill: white;
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12 16;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
 }
 
 .menu-button:hover {
-    -fx-background-color: #374151;
+    -fx-background-color: #1e293b;
+    -fx-text-fill: white;
+}
+
+.menu-button.active {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-color: #3b82f6;
+    -fx-border-width: 0 0 0 4;
+}
+
+/* ÍCONES */
+.menu-button .image-view {
+    -fx-opacity: 1;
+}
+
+.menu-button:hover .image-view,
+.menu-button.active .image-view {
+    -fx-opacity: 1;
+}
+
+/* DARK BUTTON */
+.dark-button {
+    -fx-background-color: transparent;
+}
+
+.dark-button:hover {
+    -fx-background-color: #1e293b;
+}
+
+/* TOGGLE */
+.toggle-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
 }
